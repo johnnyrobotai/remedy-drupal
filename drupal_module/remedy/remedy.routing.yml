@@ -1,0 +1,114 @@
+remedy.settings:
+  path: '/admin/config/content/remedy/settings'
+  defaults:
+    _form: '\Drupal\remedy\Form\SettingsForm'
+    _title: 'Remedy Drupal settings'
+  requirements:
+    _permission: 'administer remedy configuration'
+  options:
+    _admin_route: TRUE
+
+remedy.overview:
+  path: '/admin/content/remedy'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\OverviewController::build'
+    _title: 'Accessibility'
+  requirements:
+    _permission: 'access remedy overview'
+  options:
+    _admin_route: TRUE
+
+remedy.runs:
+  path: '/admin/content/remedy/runs'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\OverviewController::runs'
+    _title: 'Accessibility runs'
+  requirements:
+    _permission: 'access remedy overview'
+  options:
+    _admin_route: TRUE
+
+remedy.page_report:
+  path: '/admin/content/remedy/page/{node}'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\PageReportController::build'
+    _title_callback: '\Drupal\remedy\Controller\PageReportController::title'
+  requirements:
+    _permission: 'view remedy page report'
+    node: '\d+'
+  options:
+    _admin_route: TRUE
+    parameters:
+      node:
+        type: entity:node
+
+remedy.node_accessibility:
+  path: '/node/{node}/accessibility'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\PageReportController::nodeTab'
+    _title: 'Accessibility'
+  requirements:
+    _permission: 'view remedy page report'
+    node: '\d+'
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+remedy.panel:
+  path: '/remedy/page/{node}/panel'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\PanelController::build'
+    _title: 'Accessibility panel'
+  requirements:
+    _permission: 'open remedy side panel'
+    node: '\d+'
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+remedy.page_issues:
+  path: '/remedy/page/{node}/issues'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\RunController::issues'
+  requirements:
+    _permission: 'view remedy page report'
+    node: '\d+'
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+remedy.page_scan:
+  path: '/remedy/page/{node}/scan'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\RunController::queueScan'
+  requirements:
+    _permission: 'run remedy scans'
+    node: '\d+'
+  methods: [POST]
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+remedy.page_fix:
+  path: '/remedy/page/{node}/fix'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\RunController::queueFix'
+  requirements:
+    _permission: 'run remedy autofix'
+    node: '\d+'
+  methods: [POST]
+  options:
+    parameters:
+      node:
+        type: entity:node
+
+remedy.run_poll:
+  path: '/remedy/run/{run_id}/poll'
+  defaults:
+    _controller: '\Drupal\remedy\Controller\RunController::poll'
+  requirements:
+    _permission: 'view remedy page report'

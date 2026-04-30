@@ -1,0 +1,20 @@
+remedy.settings:
+  type: config_object
+  label: 'Remedy settings'
+  mapping:
+    backend_base_url:
+      type: string
+      label: 'Backend base URL'
+    api_token:
+      type: string
+      label: 'API token'
+    site_code:
+      type: string
+      label: 'Site code'
+    interaction_profile:
+      type: string
+      label: 'Default interaction profile'
+    include_content_accuracy:
+      type: boolean
+      label: 'Include content accuracy checks'
+

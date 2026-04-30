@@ -1,0 +1,6 @@
+remedy.node_accessibility:
+  route_name: remedy.node_accessibility
+  base_route: entity.node.canonical
+  title: 'Accessibility'
+  weight: 50
+

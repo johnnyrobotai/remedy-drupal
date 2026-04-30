@@ -1,0 +1,6 @@
+name: Remedy Drupal
+type: module
+description: Accessibility scanning and remediation UI for Remedy Drupal.
+package: Custom
+core_version_requirement: ^10 || ^11
+configure: remedy.settings

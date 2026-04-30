@@ -1,0 +1,9 @@
+services:
+  remedy.backend_client:
+    class: Drupal\remedy\Service\BackendClient
+    arguments: ['@http_client', '@config.factory', '@logger.factory']
+
+  remedy.issue_repository:
+    class: Drupal\remedy\Service\IssueRepository
+    arguments: ['@database']
+

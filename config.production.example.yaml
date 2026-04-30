@@ -1,0 +1,22 @@
+sites:
+  - campus_code: ELAC
+    name: East Los Angeles College
+    base_url: "https://www.elac.edu"
+    auth_type: cookie
+    headless: true
+    verify_ssl: true
+    timeout: 30
+
+llm:
+  backend: ollama
+  api_mode: native
+  base_url: "https://ollama.com/api"
+  text_model: "kimi-k2.6:cloud"
+  vision_model: "kimi-k2.6:cloud"
+  max_concurrent: 5
+  temperature: 0.0
+  top_p: 1.0
+  seed: 42
+  disable_thinking: true
+  text_max_tokens: 8192
+  vision_max_tokens: 256

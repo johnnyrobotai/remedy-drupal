@@ -1,0 +1,80 @@
+.remedy-panel,
+.remedy-page-report {
+  font-family: system-ui, sans-serif;
+}
+
+.remedy-panel__header {
+  border-bottom: 1px solid #d7e0dc;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+}
+
+.remedy-panel__meta,
+.remedy-summary-card__meta {
+  color: #4f6357;
+  font-size: 0.9rem;
+}
+
+.remedy-summary-card {
+  background: linear-gradient(180deg, #f4f7f2, #e7efe9);
+  border: 1px solid #c6d6c8;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+  padding: 0.9rem 1rem;
+}
+
+.remedy-issue-card {
+  align-items: flex-start;
+  background: #fff;
+  border: 1px solid #d7e0dc;
+  border-radius: 12px;
+  cursor: pointer;
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  padding: 0.85rem 1rem;
+  text-align: left;
+  width: 100%;
+}
+
+.remedy-issue-card:hover,
+.remedy-issue-card:focus {
+  border-color: #1c6b4a;
+  box-shadow: 0 0 0 2px rgba(28, 107, 74, 0.16);
+  outline: 0;
+}
+
+.remedy-issue-card__impact {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.remedy-issue-card__impact--critical { color: #a11d2f; }
+.remedy-issue-card__impact--serious { color: #c45a00; }
+.remedy-issue-card__impact--moderate { color: #8a6d00; }
+.remedy-issue-card__impact--minor { color: #4f6357; }
+
+.remedy-issue-card__rule {
+  color: #234133;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+}
+
+.remedy-issue-card__desc {
+  color: #1f2d25;
+}
+
+.remedy-empty {
+  color: #4f6357;
+}
+
+.remedy-highlight-overlay {
+  border: 3px solid #e85d04;
+  border-radius: 8px;
+  box-shadow: 0 0 0 99999px rgba(232, 93, 4, 0.08);
+  pointer-events: none;
+  position: absolute;
+  z-index: 9999;
+}
+

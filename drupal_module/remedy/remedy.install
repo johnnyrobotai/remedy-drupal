@@ -1,0 +1,156 @@
+<?php
+
+/**
+ * @file
+ * Install hooks for the Remedy module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function remedy_schema(): array {
+  $tables = [];
+
+  $tables['remedy_page'] = [
+    'description' => 'Tracked Drupal pages and their latest scan summary.',
+    'fields' => [
+      'id' => ['type' => 'serial', 'not null' => TRUE],
+      'entity_type' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'node'],
+      'entity_id' => ['type' => 'int', 'not null' => TRUE],
+      'entity_uuid' => ['type' => 'varchar', 'length' => 128, 'not null' => FALSE],
+      'bundle' => ['type' => 'varchar', 'length' => 64, 'not null' => FALSE],
+      'title' => ['type' => 'varchar', 'length' => 512, 'not null' => TRUE, 'default' => ''],
+      'canonical_url' => ['type' => 'text', 'not null' => TRUE, 'size' => 'big'],
+      'path_alias' => ['type' => 'text', 'not null' => FALSE, 'size' => 'medium'],
+      'published' => ['type' => 'int', 'size' => 'tiny', 'not null' => TRUE, 'default' => 1],
+      'last_scan_run_id' => ['type' => 'int', 'not null' => FALSE],
+      'last_scanned_at' => ['type' => 'int', 'not null' => FALSE],
+      'last_issue_count' => ['type' => 'int', 'not null' => TRUE, 'default' => 0],
+      'last_status' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'unknown'],
+      'created' => ['type' => 'int', 'not null' => TRUE],
+      'changed' => ['type' => 'int', 'not null' => TRUE],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'entity_lookup' => ['entity_type', 'entity_id'],
+    ],
+    'indexes' => [
+      'last_scanned_at' => ['last_scanned_at'],
+      'last_status' => ['last_status'],
+    ],
+  ];
+
+  $tables['remedy_scan_run'] = [
+    'description' => 'Queued and completed scan runs.',
+    'fields' => [
+      'id' => ['type' => 'serial', 'not null' => TRUE],
+      'page_id' => ['type' => 'int', 'not null' => TRUE],
+      'backend_run_id' => ['type' => 'varchar', 'length' => 128, 'not null' => FALSE],
+      'trigger_type' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'manual'],
+      'status' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'queued'],
+      'engine' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => 'axe-core'],
+      'requested_by_uid' => ['type' => 'int', 'not null' => FALSE],
+      'started_at' => ['type' => 'int', 'not null' => FALSE],
+      'completed_at' => ['type' => 'int', 'not null' => FALSE],
+      'summary_json' => ['type' => 'blob', 'size' => 'big', 'not null' => FALSE],
+      'render_json' => ['type' => 'blob', 'size' => 'big', 'not null' => FALSE],
+      'screenshot_uri' => ['type' => 'text', 'size' => 'medium', 'not null' => FALSE],
+      'error_message' => ['type' => 'text', 'size' => 'medium', 'not null' => FALSE],
+      'created' => ['type' => 'int', 'not null' => TRUE],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'backend_run_id' => ['backend_run_id'],
+      'page_id' => ['page_id'],
+      'status' => ['status'],
+      'completed_at' => ['completed_at'],
+    ],
+  ];
+
+  $tables['remedy_issue_instance'] = [
+    'description' => 'Individual issue occurrences attached to scan runs.',
+    'fields' => [
+      'id' => ['type' => 'serial', 'not null' => TRUE],
+      'scan_run_id' => ['type' => 'int', 'not null' => TRUE],
+      'page_id' => ['type' => 'int', 'not null' => TRUE],
+      'fingerprint' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      'engine' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      'rule_id' => ['type' => 'varchar', 'length' => 128, 'not null' => TRUE],
+      'rule_url' => ['type' => 'text', 'size' => 'medium', 'not null' => FALSE],
+      'category' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE, 'default' => 'accessibility'],
+      'impact' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE],
+      'status_snapshot' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'open'],
+      'wcag_tags_json' => ['type' => 'blob', 'size' => 'big', 'not null' => FALSE],
+      'description' => ['type' => 'text', 'size' => 'medium', 'not null' => TRUE],
+      'help' => ['type' => 'text', 'size' => 'medium', 'not null' => FALSE],
+      'help_url' => ['type' => 'text', 'size' => 'medium', 'not null' => FALSE],
+      'failure_summary' => ['type' => 'text', 'size' => 'medium', 'not null' => FALSE],
+      'review_state' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'needs_review'],
+      'occurrence_count' => ['type' => 'int', 'not null' => TRUE, 'default' => 1],
+      'targets_json' => ['type' => 'blob', 'size' => 'big', 'not null' => TRUE],
+      'html_snippet' => ['type' => 'text', 'size' => 'big', 'not null' => FALSE],
+      'trace_json' => ['type' => 'blob', 'size' => 'big', 'not null' => FALSE],
+      'fixability' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'unknown'],
+      'created' => ['type' => 'int', 'not null' => TRUE],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'scan_run_id' => ['scan_run_id'],
+      'page_id' => ['page_id'],
+      'fingerprint' => ['fingerprint'],
+      'page_rule' => ['page_id', 'rule_id'],
+    ],
+  ];
+
+  $tables['remedy_issue_state'] = [
+    'description' => 'Current workflow state for logical issues on pages.',
+    'fields' => [
+      'id' => ['type' => 'serial', 'not null' => TRUE],
+      'page_id' => ['type' => 'int', 'not null' => TRUE],
+      'fingerprint' => ['type' => 'varchar', 'length' => 64, 'not null' => TRUE],
+      'current_status' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'open'],
+      'assigned_uid' => ['type' => 'int', 'not null' => FALSE],
+      'snoozed_until' => ['type' => 'int', 'not null' => FALSE],
+      'resolution_note' => ['type' => 'text', 'size' => 'medium', 'not null' => FALSE],
+      'first_seen_run_id' => ['type' => 'int', 'not null' => TRUE],
+      'last_seen_run_id' => ['type' => 'int', 'not null' => TRUE],
+      'first_seen_at' => ['type' => 'int', 'not null' => TRUE],
+      'last_seen_at' => ['type' => 'int', 'not null' => TRUE],
+      'last_changed_by_uid' => ['type' => 'int', 'not null' => FALSE],
+      'changed' => ['type' => 'int', 'not null' => TRUE],
+    ],
+    'primary key' => ['id'],
+    'unique keys' => [
+      'page_fingerprint' => ['page_id', 'fingerprint'],
+    ],
+    'indexes' => [
+      'current_status' => ['current_status'],
+      'assigned_uid' => ['assigned_uid'],
+      'snoozed_until' => ['snoozed_until'],
+    ],
+  ];
+
+  $tables['remedy_fix_run'] = [
+    'description' => 'Auto-fix attempts and verification links.',
+    'fields' => [
+      'id' => ['type' => 'serial', 'not null' => TRUE],
+      'page_id' => ['type' => 'int', 'not null' => TRUE],
+      'source_scan_run_id' => ['type' => 'int', 'not null' => TRUE],
+      'verify_scan_run_id' => ['type' => 'int', 'not null' => FALSE],
+      'requested_by_uid' => ['type' => 'int', 'not null' => FALSE],
+      'mode' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'traced'],
+      'status' => ['type' => 'varchar', 'length' => 32, 'not null' => TRUE, 'default' => 'queued'],
+      'request_json' => ['type' => 'blob', 'size' => 'big', 'not null' => TRUE],
+      'result_json' => ['type' => 'blob', 'size' => 'big', 'not null' => FALSE],
+      'created' => ['type' => 'int', 'not null' => TRUE],
+      'completed_at' => ['type' => 'int', 'not null' => FALSE],
+    ],
+    'primary key' => ['id'],
+    'indexes' => [
+      'page_id' => ['page_id'],
+      'status' => ['status'],
+    ],
+  ];
+
+  return $tables;
+}

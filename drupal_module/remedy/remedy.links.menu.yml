@@ -1,0 +1,12 @@
+remedy.overview:
+  title: 'Accessibility'
+  description: 'View accessibility issues and scan history.'
+  route_name: remedy.overview
+  parent: system.admin_content
+  weight: 50
+
+remedy.settings:
+  title: 'Remedy Drupal settings'
+  description: 'Configure the Remedy Drupal backend connection.'
+  route_name: remedy.settings
+  parent: system.admin_config_content

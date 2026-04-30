@@ -1,0 +1,31 @@
+administer remedy configuration:
+  title: 'Administer Remedy Drupal configuration'
+  description: 'Manage backend connection settings and default behavior.'
+
+access remedy overview:
+  title: 'Access Remedy Drupal overview'
+  description: 'View page-level accessibility dashboards and reports.'
+
+view remedy page report:
+  title: 'View Remedy Drupal page report'
+  description: 'View accessibility issues for individual nodes.'
+
+open remedy side panel:
+  title: 'Open Remedy Drupal side panel'
+  description: 'Open the right-side accessibility issue drawer on node pages.'
+
+run remedy scans:
+  title: 'Run Remedy Drupal scans'
+  description: 'Trigger accessibility scans from Drupal.'
+
+run remedy autofix:
+  title: 'Run Remedy Drupal auto-fix'
+  description: 'Trigger remediation runs from Drupal.'
+
+manage remedy issue states:
+  title: 'Manage Remedy Drupal issue states'
+  description: 'Ignore, snooze, assign, and accept risk for issues.'
+
+view remedy diagnostics:
+  title: 'View Remedy Drupal diagnostics'
+  description: 'Inspect raw backend payloads, selectors, and trace details.'
