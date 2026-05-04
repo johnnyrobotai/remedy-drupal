@@ -1,0 +1,77 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    name: Smoke and build checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Python package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e '.[scanner,llm,api,dev]'
+
+      - name: Install Playwright Chromium
+        run: python -m playwright install chromium
+
+      - name: Run pytest
+        run: python -m pytest
+
+      - name: Compile Python sources
+        run: python -m compileall src tests scripts
+
+      - name: Build Docker image
+        run: docker build -t remedy-drupal:ci .
+
+      - name: Run Docker healthcheck
+        run: |
+          mkdir -p "$RUNNER_TEMP/remedy-drupal"
+          printf 'sites: []\n' > "$RUNNER_TEMP/remedy-drupal/config.yaml"
+          : > "$RUNNER_TEMP/remedy-drupal/.env"
+
+          docker run \
+            --detach \
+            --name remedy-drupal-ci \
+            --publish 8787:8787 \
+            --volume "$RUNNER_TEMP/remedy-drupal/config.yaml:/app/config.yaml:ro" \
+            --volume "$RUNNER_TEMP/remedy-drupal/.env:/app/.env:ro" \
+            remedy-drupal:ci
+
+          for attempt in {1..60}; do
+            health_status="$(docker inspect --format='{{.State.Health.Status}}' remedy-drupal-ci)"
+            if [ "$health_status" = "healthy" ]; then
+              docker inspect --format='{{json .State.Health}}' remedy-drupal-ci
+              exit 0
+            fi
+            if [ "$health_status" = "unhealthy" ]; then
+              docker logs remedy-drupal-ci
+              docker inspect --format='{{json .State.Health}}' remedy-drupal-ci
+              exit 1
+            fi
+            sleep 2
+          done
+
+          docker logs remedy-drupal-ci
+          docker inspect --format='{{json .State.Health}}' remedy-drupal-ci
+          exit 1
+
+      - name: Show Docker logs on failure
+        if: failure()
+        run: docker logs remedy-drupal-ci || true
+
+      - name: Stop Docker container
+        if: always()
+        run: docker rm -f remedy-drupal-ci || true

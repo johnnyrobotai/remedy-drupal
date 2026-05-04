@@ -64,6 +64,11 @@ test_*.py
 *.test.*
 *.spec.*
 !README.md
+!tests/
+!tests/**/
+!tests/**/*.py
+tests/**/__pycache__/
+tests/**/*.py[cod]
 
 # Screenshots / demo recordings — not part of source
 screenshots/
