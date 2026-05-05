@@ -343,3 +343,7 @@ YouTube's native fullscreen hides all page-level overlays, so the module:
 - High contrast mode support via `prefers-contrast: more` media query
 - Reduced motion support disables transcript scroll animations
 - HTML in captions is escaped to prevent XSS from untrusted caption files
+
+## License
+
+GPL-2.0-or-later. See `LICENSE`.
